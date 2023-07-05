@@ -67,8 +67,6 @@ public class GamePanel extends JPanel implements ActionListener{
     }
 
     public void paintComponent(Graphics g){
-        //print "i am here"
-        System.out.println("i am here");
         super.paintComponent(g);
         draw(g);
     }
@@ -240,8 +238,6 @@ public class GamePanel extends JPanel implements ActionListener{
             if(e.getKeyCode() == KeyEvent.VK_SPACE){
                 if(!running){
                     startNewGame(); // start a new game
-                    //print that a new game started
-                    System.out.println("New Game Started");
                 }
             }
         }        
