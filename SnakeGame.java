@@ -1,8 +1,6 @@
 class Sum{
     public static void main(String[] args) {
-        int a = 10;
-        int b = 20;
-        int sum = a + b;
-        System.out.println("Sum of " + a + " and " + b + " is " + sum);
+       GameFrame frame = new GameFrame();
+       // or you can just write new GameFrame(); if you don't need to use the frame variable
     }
-}
+}   
