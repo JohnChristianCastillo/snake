@@ -1,12 +1,8 @@
-
-
 import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
 import java.util.Random;
-
-import javax.swing.JPanel;
 
 // currently the game does not move because we have not added the key listener yet to add this we need to 
 public class GamePanel extends JPanel implements ActionListener{
@@ -33,9 +29,6 @@ public class GamePanel extends JPanel implements ActionListener{
     boolean running = false; // boolean variable that will determine if the game is running or not
 
     GamePanel(){
-        random = new Random(); // initialize the random object
-        this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT)); // set the preferred size of the panel
-        this.setBackground(Color.black); // set the background color of the panel
         this.setFocusable(true); // set the focusable to true
         this.addKeyListener(new MyKeyAdapter()); // add the key listener to the panel
 
@@ -43,6 +36,30 @@ public class GamePanel extends JPanel implements ActionListener{
     }
 
     public void startGame(){
+        random = new Random(); // initialize the random object
+        this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT)); // set the preferred size of the panel
+        this.setBackground(Color.black); // set the background color of the panel
+
+        running = true;
+        newApple(); 
+        timer = new Timer(DELAY, this); // initialize the timer object, the first parameter is the delay and the second parameter is the action listener
+        timer.start();
+    }
+
+    private void startNewGame() {
+        random = new Random(); // initialize the random object
+        this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT)); // set the preferred size of the panel
+        this.setBackground(Color.black); // set the background color of the panel
+        // reinitialize the snake
+        for(int i = 0; i < bodyParts; i++){
+            x[i] = 0;
+            y[i] = 0;
+        }
+        // reinitialize its direction
+        direction = 'R';
+
+        bodyParts = 6;
+        applesEaten = 0;
         running = true;
         newApple(); 
         timer = new Timer(DELAY, this); // initialize the timer object, the first parameter is the delay and the second parameter is the action listener
@@ -50,6 +67,8 @@ public class GamePanel extends JPanel implements ActionListener{
     }
 
     public void paintComponent(Graphics g){
+        //print "i am here"
+        System.out.println("i am here");
         super.paintComponent(g);
         draw(g);
     }
@@ -72,7 +91,13 @@ public class GamePanel extends JPanel implements ActionListener{
             g.fillRect(x[0], y[0], UNIT_SIZE, UNIT_SIZE); // draw the head of the snake
             // then we can draw the body of the snake
             for(int i = 1; i < bodyParts; i++){
-                g.setColor(new Color(45, 180, 0)); // set the color of the body of the snake
+                // make sure the different body parts of the snake has a gradient to make it distinguishable
+                if(i % 2 == 0){
+                    g.setColor(new Color(45, 90, 0)); 
+                }
+                else{
+                    g.setColor(new Color(45, 150, 0)); 
+                }
                 g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE); // draw the body of the snake
             }
 
@@ -157,6 +182,18 @@ public class GamePanel extends JPanel implements ActionListener{
         g.setFont(new Font("Ink Free", Font.BOLD, 75)); // set the font of the text
         FontMetrics metrics = getFontMetrics(g.getFont()); // helps with the centering of the text
         g.drawString("Game Over", (SCREEN_WIDTH - metrics.stringWidth("Game Over"))/2, SCREEN_HEIGHT/2); // draw the text
+
+        // we want to display the score of the player
+        g.setColor(Color.red); // set the color of the text
+        g.setFont(new Font("Ink Free", Font.BOLD, 40)); // set the font of the text
+        FontMetrics metrics2 = getFontMetrics(g.getFont());
+        g.drawString("Score: " + applesEaten, (SCREEN_WIDTH - metrics2.stringWidth("Score: " + applesEaten))/2, g.getFont().getSize()); // draw the text
+
+        // furthermore we want the player to be able to restart the game
+        g.setColor(Color.red); // set the color of the text
+        g.setFont(new Font("Ink Free", Font.BOLD, 40)); // set the font of the text
+        FontMetrics metrics3 = getFontMetrics(g.getFont());
+        g.drawString("Press Space to Restart", (SCREEN_WIDTH - metrics3.stringWidth("Press Space to Restart"))/2, SCREEN_HEIGHT/2 + 50); // draw the text
     }
     
 
@@ -199,9 +236,14 @@ public class GamePanel extends JPanel implements ActionListener{
                         direction = 'D'; // change the direction of the snake to down
                     }
                     break;
-                    
+            }
+            if(e.getKeyCode() == KeyEvent.VK_SPACE){
+                if(!running){
+                    startNewGame(); // start a new game
+                    //print that a new game started
+                    System.out.println("New Game Started");
+                }
             }
         }        
     }
-
 }
